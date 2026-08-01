@@ -1,0 +1,17 @@
+<svg viewBox="0 0 700 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lineFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A227" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#C9A227" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#C9A227" stop-opacity="0"/>
+    </linearGradient>
+    <style>
+      .rule { animation: shimmer 5s ease-in-out infinite; }
+      @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+      .rune { animation: turn 24s linear infinite; transform-origin: 350px 12px; }
+      @keyframes turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+  </defs>
+  <rect class="rule" x="0" y="11" width="700" height="1.5" fill="url(#lineFade)"/>
+  <rect class="rune" x="346" y="8" width="8" height="8" fill="#C9A227" opacity="0.9" transform="rotate(45 350 12)"/>
+</svg>
