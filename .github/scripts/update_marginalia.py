@@ -61,27 +61,28 @@ def build_block():
     if not repos:
         raise ValueError("no repositories returned")
 
-    primary = repos[0]
-    others = [r["name"] for r in repos[1:3]]
-    languages = [r["language"] for r in repos[:3] if r.get("language")]
+    top = repos[:3]
+    languages = [r["language"] for r in top if r.get("language")]
     seen = []
     for lang in languages:
         if lang not in seen:
             seen.append(lang)
 
-    lines = [
-        f"Currently touching — {primary['name']} · updated {relative_time(primary['pushed_at'])}",
-    ]
-    if others:
-        lines.append(f"Also recent — {', '.join(others)}")
+    fence = ["```"]
+    for r in top:
+        date = r["pushed_at"][:10]
+        name = r["name"]
+        fence.append(f"{date}  {name:<28} touched")
     if seen:
-        lines.append(f"Working mostly in — {', '.join(seen[:3])}")
+        fence.append("")
+        fence.append(f"primary language, recent pushes — {seen[0]}")
+    fence.append("```")
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    lines.append(f"")
-    lines.append(f"<sub>last checked {stamp}</sub>")
+    fence.append("")
+    fence.append(f"checked {stamp}")
 
-    return "\n".join(lines)
+    return "\n".join(fence)
 
 
 def main():

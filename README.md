@@ -1,74 +1,16 @@
-<div align="center">
-
-<img src="assets/threshold.svg" width="100%" alt=""/>
-
 # Baaqar Naqi
 
-<img src="https://readme-typing-svg.demolab.com/?font=Georgia&size=16&pause=1400&color=B08D57&background=00000000&center=true&vCenter=true&width=560&height=32&repeat=false&lines=Notes+kept+while+learning+how+things+actually+work." alt="Notes kept while learning how things actually work."/>
+CS undergraduate. Systems, machine learning, retrieval.
 
-<sub>CS undergraduate · systems · machine learning · narrative</sub>
+[Now](#now) · [Systems](#systems) · [Applied](#applied) · [Archive](#archive) · [Log](#log)
 
-<br/>
+---
 
-[Juvenilia](#juvenilia) · [Working Papers](#working-papers) · [The Manuscript](#the-manuscript) · [Marginalia](#marginalia) · [Colophon](#colophon)
+## Now
 
-<br/>
+**Narrative Intelligence Engine** — a retrieval pipeline for novels that tracks how character relationships change over the course of a story, not just what's true about them at a single point in time.
 
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-</div>
-
-<br/>
-
-## Juvenilia
-
-The early pieces. Kept because scrapping them would mean forgetting what they taught.
-
-**[my_ostep_projects](https://github.com/Baaqar-007/my_ostep_projects)** · `C`
-CPU scheduling and memory management, worked through by hand from the OSTEP problem sets. Implementing lottery scheduling made the tradeoff between fairness and throughput concrete in a way reading about it never did.
-
-**[ml_algos](https://github.com/Baaqar-007/ml_algos)** · `Makefile`
-Decision trees, GLMs, SVMs, MLPs, and clustering, derived from the underlying math instead of imported. Backpropagation stopped being a black box once I'd worked out the chain rule for it myself, mistakes included.
-
-**[serverless-comm](https://github.com/Baaqar-007/serverless-comm)** · `JavaScript`
-Peer-to-peer video, chat, and file transfer over WebRTC, with no backend server. Removing the server didn't remove the coordination problem — it just moved it into signaling, which turned out to be the harder half.
-
-**[dyslexia-accessibility-nlp](https://github.com/Baaqar-007/dyslexia-accessibility-nlp)** · `Jupyter Notebook`
-NLP applied to make text more readable for people with dyslexia. The harder part wasn't the model — it was learning enough about how dyslexia actually affects reading to know what "more readable" should mean.
-
-A couple of earlier exercises — a small arcade game, a Flask blog — aren't listed individually. They taught less, but they're part of why the OSTEP work was approachable at all.
-
-<sub>[↑ catalogue](#baaqar-naqi)</sub>
-
-<br/>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-<br/>
-
-## Working Papers
-
-**[artifact-to-pwa](https://github.com/Baaqar-007/artifact-to-pwa)** began as a short weekend utility — turning a Claude-generated HTML or React artifact into an installable, offline-capable app without a build step.
-
-To work offline, calls to `localStorage` needed to keep behaving exactly as they always had — synchronous, instant — while the actual data moved to IndexedDB in the background, since that's the only persistent store a service worker can rely on. The shim mirrors state in memory and returns immediately, then queues an IndexedDB `put()` behind it.
-
-Someone asked, reasonably, what happens to that last write if the tab closes in the gap between the call returning and the transaction committing. It survives — the queued transaction still completes on navigation or a normal tab close. It does not survive a hard crash inside that same window. That isn't a flaw so much as the actual shape of the guarantee IndexedDB gives you, one most people who use it never have reason to look at directly.
-
-<sub>published as `@baaqar/artifact-to-pwa` on npm</sub>
-
-<sub>[↑ catalogue](#baaqar-naqi)</sub>
-
-<br/>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-<br/>
-
-## The Manuscript
-
-Most retrieval systems answer a question by ignoring when something was true and where it came from. This one doesn't get to — a **Narrative Intelligence Engine**:
-
-<!-- TODO: link the repo here once it's public — [Narrative Intelligence Engine](#) -->
+*In design. No public repo yet.*
 
 ```
 Dataset
@@ -81,37 +23,62 @@ Dataset
   ↓  Answer
 ```
 
-Reading **Designing Data-Intensive Applications** (Kleppmann) alongside it, for the same reason the pipeline has a temporal layer at all — storage and consistency guarantees are easy to assume and hard to actually verify.
+Most RAG systems treat facts as timeless — a relationship either holds or it doesn't. Fiction breaks that assumption constantly: two characters are allies in chapter 3 and enemies by chapter 20, and a query about "their relationship" only makes sense with a *when* attached to it. That's what the temporal layer is for — versioning graph edges instead of overwriting them, so retrieval can answer "what was true at this point in the story," not just "what's true now."
 
-<sub>[↑ catalogue](#baaqar-naqi)</sub>
+The harder open question is entity canonicalization across a novel's own inconsistency — the same character referred to by name, nickname, title, and pronoun, sometimes within one paragraph, with resolution that has to work without ever having seen the book before.
 
-<br/>
+Reading **Designing Data-Intensive Applications** (Kleppmann) alongside this, mainly because the temporal layer's correctness depends on storage and consistency guarantees I'd rather verify than assume.
 
-<img src="assets/divider.svg" width="100%" alt=""/>
+---
 
-<br/>
+## Systems
 
-## Marginalia
+**[artifact-to-pwa](https://github.com/Baaqar-007/artifact-to-pwa)** — converts a Claude-generated HTML or React artifact into an installable, offline-capable app with no build step. Published as `@baaqar/artifact-to-pwa` on npm.
 
-*Added automatically. Not curated.*
+The offline behavior depends on `localStorage` calls staying synchronous while the actual writes move to IndexedDB, since that's the only store a service worker can persist to. The shim mirrors state in memory and returns immediately, then queues the real write behind it:
+
+```
+call setItem()
+  → memory mirror updated, returns instantly
+  → IndexedDB put() queued
+       → commits after current task
+       → survives navigation / tab close
+       → does not survive a crash inside this gap
+```
+
+That gap is small — a few milliseconds — but it's real, and it's the actual shape of the durability guarantee IndexedDB gives you, not an approximation of it.
+
+**[serverless-comm](https://github.com/Baaqar-007/serverless-comm)** — peer-to-peer video, chat, and file transfer over WebRTC, with local AI running client-side in Web Workers. No backend server.
+
+Removing the server doesn't remove the coordination problem, it just relocates it: two peers who've never spoken have to find each other and exchange connection metadata before WebRTC can take over. Handled with STUN first — each peer asks a public STUN server what its own reachable address looks like from outside its NAT, then the two exchange those addresses directly. That fails against symmetric NAT or a firewall that blocks the direct path, which is where TURN comes in as a fallback: a relay server both peers can reach, forwarding traffic between them when a direct connection isn't possible. STUN when it can be direct, TURN when it can't — the server stays out of the data path either way, it just helps two strangers find each other.
+
+---
+
+## Applied
+
+**[dyslexia-accessibility-nlp](https://github.com/Baaqar-007/dyslexia-accessibility-nlp)** — NLP applied to make text more readable for people with dyslexia. The harder part wasn't the model; it was learning enough about how dyslexia actually affects reading to know what "more readable" should mean.
+
+---
+
+## Archive
+
+Earlier work, compressed:
+
+- **[my_ostep_projects](https://github.com/Baaqar-007/my_ostep_projects)** — CPU scheduling and memory management from the OSTEP problem sets, in C. FCFS through stride scheduling, free-space allocators, by hand.
+- **[ml_algos](https://github.com/Baaqar-007/ml_algos)** — decision trees, GLMs, SVMs, MLPs, and clustering, derived from the underlying math instead of imported.
+- Two smaller exercises (an arcade game, a Flask blog) aren't listed individually — lower signal, but part of how the above got approachable.
+
+---
+
+## Log
 
 <!--START_SECTION:activity-->
 <!--END_SECTION:activity-->
 
-<sub>if this hasn't moved in a while, the workflow is quiet, not broken</sub>
+Updates once daily. If the dates above stop moving, the workflow stopped — not the work.
 
-<sub>[↑ catalogue](#baaqar-naqi)</sub>
-
-<br/>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-<br/>
-
-## Colophon
-
-Printed by **Baaqar Naqi**, CS undergraduate, working from UTC−12.
-
-<!-- TODO: optional — a small portrait or personal mark, e.g. <img src="assets/mark.png" width="48"/> -->
+---
 
 [linkedin](https://www.linkedin.com/in/baaqar-naqi-910332217/) · [leetcode](https://leetcode.com/u/Baaqar-007/) · [instagram](https://www.instagram.com/baaqarnaqi/)
+
+<!-- if you're reading this in source rather than rendered: hi. -->
