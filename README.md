@@ -48,15 +48,6 @@ flowchart LR
     DDIA -.-> SCALE
     
     RL --> ALIEN([🚧 Alien Invasion<br>RL Environment])
-
-    %% Interactive Node Links
-    click ATP "[https://github.com/baaqarnaqi/artifact-to-pwa](https://github.com/Baaqar-007/artifact-to-pwa)"
-    click COMM "[https://github.com/baaqarnaqi/serverless-comm](https://github.com/Baaqar-007/serverless-comm)"
-    click DYS "[https://github.com/baaqarnaqi/dyslexia-accessibility-nlp](https://github.com/Baaqar-007/dyslexia-accessibility-nlp)"
-    click NIE "[https://github.com/baaqarnaqi/narrative-intelligence](https://github.com/Baaqar-007/narrative-intelligence)"
-    click DDIA "[https://github.com/baaqarnaqi/ddia-notes](https://github.com/Baaqar-007/ddia-notes)"
-    click OSTEP "[https://github.com/baaqarnaqi/my_ostep_projects](https://github.com/Baaqar-007/my_ostep_projects)"
-    click ALGOS "[https://github.com/baaqarnaqi/ml_algos](https://github.com/Baaqar-007/ml_algos)"
 ```
 
 
