@@ -11,16 +11,16 @@ flowchart TD
     ME --> INT(Intelligence)
     ME --> HUM(Human Understanding)
 
-    SYS --> WEB[Web Technologies]
+    SYS --> WEB[Web<br>Technologies]
     SYS --> DIST[Distributed Systems]
     SYS --> OS[Operating Systems]
 
-    INT --> IR[IR & Knowledge Graphs]
+    INT --> IR[IR & <br>Knowledge Graphs]
     INT --> ML[Machine Learning]
 
     HUM --> NLP[Language / NLP]
     HUM --> ACC[Accessibility]
-    HUM --> RL[Learning & Behaviour]
+    HUM --> RL[Learning & <br>Behaviour]
 
     OS --> OSTEP([📚 my_ostep_projects])
     ML --> ALGOS([📚 ml_algos])
@@ -33,7 +33,7 @@ flowchart TD
     ACC --> DYS([📦 Dyslexia Lens<br>dyslexia-accessibility-nlp])
     NLP -.-> DYS
 
-    IR --> NIE([🔧 Narrative Intelligence Engine])
+    IR --> NIE([🔧 Narrative Intelligence<br>Engine])
     NLP --> NIE
     DDIA -.-> NIE
 
