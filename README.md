@@ -9,11 +9,11 @@ flowchart TD
 
     ME --> SYS(Systems)
     ME --> INT(Intelligence)
-    ME --> HUM(Human Understanding)
+    ME --> HUM(Human<br>Understanding)
 
     SYS --> WEB[Web<br>Technologies]
-    SYS --> DIST[Distributed Systems]
-    SYS --> OS[Operating Systems]
+    SYS --> DIST[Distributed<br>Systems]
+    SYS --> OS[Operating<br>Systems]
 
     INT --> IR[IR & <br>Knowledge Graphs]
     INT --> ML[Machine Learning]
@@ -26,14 +26,14 @@ flowchart TD
     ML --> ALGOS([📚 ml_algos])
     DIST --> DDIA([📚 ddia-notes])
 
-    WEB --> ATP([📦 Native Artifacts<br>artifact-to-pwa])
+    WEB --> ATP([📦 Native Artifact<br>artifact-to-pwa])
     DIST --> COMM([📦 Peerspace<br>serverless-comm])
     WEB -.-> COMM
 
     ACC --> DYS([📦 Dyslexia Lens<br>dyslexia-accessibility-nlp])
     NLP -.-> DYS
 
-    IR --> NIE([🔧 Narrative Intelligence<br>Engine])
+    IR --> NIE([🔧 Narrative<br>Intelligence<br>Engine])
     NLP --> NIE
     DDIA -.-> NIE
 
